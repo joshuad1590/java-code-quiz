@@ -1,38 +1,96 @@
-body,html{
-    font-family:Verdana, Geneva, Tahoma, sans-serif;
-    text-align: center;
-    background-color:bisque;
-    height: 100%;
+body {
+    font-family: Verdana;
+    background-color: #949090;
+    margin: 0px;
+  }
+  
+  header {
     display: flex;
+    border: 3px black solid;
+    justify-content: space-between;
+    background-color: #5657a0a9;
+    color: #ffffff;
+    padding: 3vh;
+  }
+  
+  #time {
+    min-width: 105px;
+  }
+  
+  main {
+    display: flex;
+    align-items: center;
     justify-content: center;
-    border: black;
-}
+    border: black 5px solid;
+  }
 
-#quiz-name {
-    font-style: bold;
-    align-content: center;
-}
+  #btn-start {
+    display: block;
+    color: #ffffff;
+    background-color: #218380;
+    padding: 2vh;
+    border-radius: 8px;
+    border: none;
+  }
 
-#btn-start{
-	padding:6px 0 6px 0;
-	border-radius:8px;
-	background:#700606;
-    font:bold 40px;
-	color:white;
-}
+  #question-div{
+    max-width: 80%;
+    margin-top: 15vh;
+    border: solid;
+    border-width: 2px;
+    padding: 5vw;
+    border-radius: 30px;
+    border-color: lightgray;
+    box-shadow: 10px 5px 5px lightgray;
+  }
+  
+  #start-screen {
+    display: inline;
+    text-align: center;
+  }
+  
+  .answer-btn {
+    width: 100%;
+    text-align: left;
+    margin: 5px;
+  }
+  
+  #result-div {
+    display: none;
+  }
 
-.timer{
-    background: #eeeeee;
-    box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0.,0,0,0.23);
-}
-
-.answers {
-    background: rgb(223, 201, 7);
-    width: 90%;
-    display: inline-block;
-    border-radius:8px;
-    padding: 3px;
-}
-#timer {
-
-}
+  .inline-form {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  
+  #initials {
+    width: 25%;
+    margin: 8px;
+    padding: 1vh;
+  }
+  
+  #hs-list {
+    padding-inline-start: 20px;
+  }
+  
+  /* Media Queries */
+  
+  @media screen and (min-width: 850px) {
+    .card {
+      max-width: 680px;
+    }
+  }
+  
+  /* Media query that specifies devices that can utilize hover */
+  @media (hover) {
+    /* Stylings pertaining to hover pseudo-class*/
+    a:hover {
+      color: #cbe1e0;
+    }
+  
+    button:hover {
+      background-color: rgba(33, 131, 127, 0.5);
+    }
+  }

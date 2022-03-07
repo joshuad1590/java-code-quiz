@@ -1,98 +1,162 @@
-var quiz = document.getElementById('quiz')
-var answers = document.getElementById('.answers')
-var questions = document.getElementById('questions')
-var timer = document.getElementById("timer");
-var btnStart = document.getElementById("btn-start");
-var a_btn = document.getElementById('a_btn')
-var b_btn = document.getElementById('b_btn')
-var c_btn = document.getElementById('c_btn')
-var d_btn = document.getElementById('d_btn')
-var submitBtn = document.getElementById('submit')
-var currentIndex = 0;
-var score = 0;
-var time = 75;
-var maxScore = 5;
-var highScore = JSON.parse(localStorage.getItem("highScore")) || [];
+const startPage = document.getElementById("startpage");
+var questionDiv = document.getElementById("question-div");
+var yourScore = document.getElementById("your-score");
+var highScore = document.getElementById("highscore");
+var resultDiv = document.getElementById("result-div");
+var resultText = document.getElementById("result"); 
 var questions = [
     {
-        question: "JavaScript is a __-side programming language",
-        a: "Client",
-        b: "Server",
-        c: "Both",
-        d: "None",
-        correct: "c",
+        question: "JavaScript is a __-side programming language?",
+        answers: ["Client", "Server", "Both", "None"],
+        correct: 2,
     },
     {
         question: "Which of the following will write the message “Hello DataFlair!” in an alert box? does CSS stand for?",
-        a: "alertBox(“Hello DataFlair!”);",
-        b: "alert(Hello DataFlair!);",
-        c: "msgAlert(“Hello DataFlair!”);",
-        d: "alert(“Hello DataFlair!”);",
-        correct: "d",
+        answers: ["alertBox(“Hello DataFlair!”);", "alert(Hello DataFlair!);", "msgAlert(“Hello DataFlair!”);", "alert(“Hello DataFlair!”);"],
+        correct: 2,
     },
     {
         question: "How do you find the minimum of x and y using JavaScript?",
-        a: "min(x,y);",
-        b: "Math.min(x,y)",
-        c: "Math.min(xy)",
-        d: "min(xy);",
-        correct: "b",
+        answers: ["min(x,y);", "Math.min(x,y)", "Math.min(xy)","min(xy);"],
+        correct: 1,
     },
     {
         question: "What year was JavaScript launched?",
-        a: "1996",
-        b: "1995",
-        c: "1994",
-        d: "none of the above",
-        correct: "b",
+        answers: ["1996", "1995", "1994", "none of the above"],
+        correct: 1,
     },
 ]
-//Start Quiz
-btnStart.addEventListener("click", startQuiz);
+function hide() {
+  startPage.setAttribute("hidden", true);
+  questionDiv.setAttribute("hidden", true);
+  yourScore.setAttribute("hidden", true );
+  highScore.setAttribute("hidden", true);
+}
+
+function hideResult() {
+  resultDiv.style.display = "none";
+}
+
+//var for time function
+var intervalID;
+var time;
+var currentQuestion;
+
+document.getElementById("btn-start").addEventListener("click", startQuiz);
+
+ //start quiz function
 function startQuiz() {
-    document.body.innerHTML = ""
+  hide();
+  questionDiv.removeAttribute("hidden");
+  currentQuestion = 0;
+  displayQuestions();
+  time = questions.length * 10;
+  intervalID = setInterval(countdown, 1000);
+  displayTime();
+}
 
-    if (currentIndex > questions.length - 1) {
-        endQuiz();
+
+//reduce time by 1 unitl 0 then end quiz
+function countdown() {
+  time--;
+  displayTime();
+  if (time < 1) {
+    endQuiz();
+  }
+}
+
+//display time 
+var timeDisplay = document.getElementById("time");
+function displayTime() {
+  timeDisplay.textContent = time;
+}
+
+//shows question and  the answers
+function displayQuestions() {
+  let question = questions[currentQuestion];
+  let answers = question.answers;
+
+  let questionTitle = document.getElementById("question-text");
+  questionTitle.textContent = question.question;
+  for (let i = 0; questions.length; i++) {
+    let answer = answers[i];
+    let answerButton = document.getElementById("answer" + (i+1));
+    console.log(answerButton);
+    
+    answerButton.innerText = answer;
+  }
+ }
+
+
+document.getElementById("answers").addEventListener("click", checkAnswer);
+
+function answerCorrect(answerButton) {
+  return answerButton.textContent === questions[currentQuestion].answer;
+}
+
+//check to see if answer is incorrect
+function checkAnswer(eventObject) {
+  let answerButton = eventObject.target;
+  resultDiv.style.display = "block";
+  if (answerCorrect(answerButton)) {
+    resultText.textContent = "Correct!";
+    setTimeout(hideResult, 1000);
+  } else {
+    resultText.textContent = "Incorrect!";
+    setTimeout(hideResult, 1000);
+    if (time >= 10) {
+      time = time - 10;
+      displayTime();
+    } else {
+      time = 0;
+      displayTime();
+      endQuiz();
     }
-    else {
+  }
 
-    var newQuiz = questions[currentIndex]
-    document.getElementById("questions").style.fontStyle = "italic";
-    
-    const questionEl = document.createElement("div");
-    questionEl.innerHTML = "<h1>"+newQuiz.question+"</h1>";
-    document.body.append(questionEl);
 
-    const answerA = document.createElement("button");
-    answerA.innerHTML = "<h2>"+newQuiz.a+"</h2>";
-    answerA.addEventListener('click', () => {
-        // if ('a' == newQuiz.correct)
-        currentIndex += 1;
-        startQuiz();
-    })
-    document.body.append(answerA);
 
-    const answerB = document.createElement("button");
-    answerB.innerHTML = "<h2>"+newQuiz.b+"</h2>";
-    document.body.append(answerB);
-   
-    const answerC = document.createElement("button");
-    answerC.innerHTML = "<h2>"+newQuiz.c+"</h2>";
-    document.body.append(answerC);
-    
-    const answerD= document.createElement("button");
-    answerD.innerHTML = "<h2>"+newQuiz.d+"</h2>";
-    document.body.append(answerD);
+  //next question
+  currentQuestion++;
+  //if no more question end quiz
+  if (currentQuestion < questions.length) {
+    questionDiv.removeAttribute("hidden");
+    displayQuestions();
+  } else {
+    endQuiz();
+  }
 }
-}
-//Set Timer
 
+//display scorecard and hide  divs
+var score = document.getElementById("score");
 
-//Question & Answers
-
-//HighScore
 function endQuiz() {
-    let name = prompt("Please enter name");
-        highScore.push({name, score});
+  clearInterval(intervalID);
+  hide();
+  highScore.removeAttribute("hidden");
+  score.textContent = time;
 }
+
+var submitBtn = document.getElementById("submit-btn");
+var inputIt = document.getElementById("initials");
+
+submitBtn.addEventListener("click", storeScore);
+
+function storeScore(event) {
+  event.preventDefault();
+  if (!inputElement.value) {
+    alert("Please enter your initials before pressing submit!");
+    return;
+  }
+  let leaderboardItem = {
+    initials: inputElement.value,
+    score: time,
+  };
+
+  updateStoredLeaderboard(leaderboardItem);
+  hideCards();
+  highScore.removeAttribute("hidden");
+
+  renderLeaderboard();
+}
+
